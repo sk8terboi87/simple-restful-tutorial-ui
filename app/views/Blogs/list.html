@@ -1,1 +1,19 @@
-Welcome!!! (pss: click blogs)
+<div class='pull-right' style='margin-bottom:20px'>
+	<a class='btn btn-success' ng-href="#/blog/create"><i class='icon-plus'></i> Blogs</a>
+</div>
+<h2 class='page-header'>Blogs</h2>
+<table class='table table-condensed table-bordered'>
+	<tr>
+		<th>Title</th>
+		<th>Description</th>
+		<th>&nbsp;</th>
+	</tr>
+	<tr ng-repeat='blog in blogs.data'>
+		<td>{{blog.name}}</td>
+		<td>{{blog.description}}</td>
+		<td class='span1'>
+			<a ng-click='remove(blog.id)'><i class='icon-remove'></i></a>
+			<a ng-href='/#/blog/update/{{blog.id}}'><i class='icon-share'></i></a>
+		</td>
+	</tr>
+</table>
