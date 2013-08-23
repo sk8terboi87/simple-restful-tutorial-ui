@@ -5,8 +5,8 @@
         BlogsModel.initialize($scope)
 
         $scope.save = ->
-            BlogsModel.send('add', $scope.blog)
+            BlogsModel.create($scope.blog, $scope)
 
-    app.controller('BlogsController', Controller)
+    app.controller('BlogsControllerCreate', Controller)
 
 ) restfulTut

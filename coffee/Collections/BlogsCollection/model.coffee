@@ -1,25 +1,45 @@
 "use strict"
-@restfulTut.service('BlogsModel', ($resource) ->
-    apiCall = 'http://192.168.0.2/rest-api/app/index.php/'
-    apiRoutes = {
-        'add': 'blogs/add'
-        'remove': 'blogs/remove'
-        'update': 'blogs/update'
-        'list': 'blogs/list'
-    }
+@restfulTut.service('BlogsModel', ($resource, resourceUrl) ->
     initializeFn = (scope) ->
-        console.log 'constructor'
+        scope.alertMessage = []
+        scope.blogs = {}
         scope.blog = {}
 
-    sendFn = (route, data) ->
-        request = $resource(apiCall + apiRoutes[route])
-        request.save(data)
+    createFn = (data, scope) ->
+        request = $resource resourceUrl + 'blogs', {},
+          create:
+            method: "PUT"
 
-    retrieveFn = (route) ->
-        request = $resource(apiCall + apiRoutes[route])
+        scope.alertMessage = request.create(data);
+
+    retrieveFn = () ->
+        request = $resource(resourceUrl + 'blogs')
         request.get()
 
+    queryFn = (scope, id) ->
+        request = $resource resourceUrl + 'blogs'+"/:entryId", {},
+          query:
+            method: "GET"
+            params:
+              entryId: id
+              isArray: true
+
+        response = request.query(id)
+        response.$then((result) ->
+            scope.blog = result.data.data
+        )
+
+    removeFn = (id, scope) ->
+        request = $resource(resourceUrl + 'blogs/remove/' + id)
+        response = request.delete()
+        response.$then((result) ->
+            if (result.data.status is "success")
+                scope.list()
+        )
+
     initialize: initializeFn
-    send: sendFn
+    create: createFn
     retrieve: retrieveFn
+    query: queryFn
+    remove: removeFn
 )
