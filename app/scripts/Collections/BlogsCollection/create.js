@@ -6,10 +6,10 @@
     Controller = function($scope, $resource, BlogsModel) {
       BlogsModel.initialize($scope);
       return $scope.save = function() {
-        return BlogsModel.send('add', $scope.blog);
+        return BlogsModel.create($scope.blog, $scope);
       };
     };
-    return app.controller('BlogsController', Controller);
+    return app.controller('BlogsControllerCreate', Controller);
   })(restfulTut);
 
 }).call(this);

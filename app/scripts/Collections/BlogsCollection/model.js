@@ -1,33 +1,59 @@
 (function() {
   "use strict";
 
-  this.restfulTut.service('BlogsModel', function($resource) {
-    var apiCall, apiRoutes, initializeFn, retrieveFn, sendFn;
-    apiCall = 'http://192.168.0.2/rest-api/app/index.php/';
-    apiRoutes = {
-      'add': 'blogs/add',
-      'remove': 'blogs/remove',
-      'update': 'blogs/update',
-      'list': 'blogs/list'
-    };
+  this.restfulTut.service('BlogsModel', function($resource, resourceUrl) {
+    var createFn, initializeFn, queryFn, removeFn, retrieveFn;
     initializeFn = function(scope) {
-      console.log('constructor');
+      scope.alertMessage = [];
+      scope.blogs = {};
       return scope.blog = {};
     };
-    sendFn = function(route, data) {
+    createFn = function(data, scope) {
       var request;
-      request = $resource(apiCall + apiRoutes[route]);
-      return request.save(data);
+      request = $resource(resourceUrl + 'blogs', {}, {
+        create: {
+          method: "PUT"
+        }
+      });
+      return scope.alertMessage = request.create(data);
     };
-    retrieveFn = function(route) {
+    retrieveFn = function() {
       var request;
-      request = $resource(apiCall + apiRoutes[route]);
+      request = $resource(resourceUrl + 'blogs');
       return request.get();
+    };
+    queryFn = function(scope, id) {
+      var request, response;
+      request = $resource(resourceUrl + 'blogs' + "/:entryId", {}, {
+        query: {
+          method: "GET",
+          params: {
+            entryId: id,
+            isArray: true
+          }
+        }
+      });
+      response = request.query(id);
+      return response.$then(function(result) {
+        return scope.blog = result.data.data;
+      });
+    };
+    removeFn = function(id, scope) {
+      var request, response;
+      request = $resource(resourceUrl + 'blogs/remove/' + id);
+      response = request["delete"]();
+      return response.$then(function(result) {
+        if (result.data.status === "success") {
+          return scope.list();
+        }
+      });
     };
     return {
       initialize: initializeFn,
-      send: sendFn,
-      retrieve: retrieveFn
+      create: createFn,
+      retrieve: retrieveFn,
+      query: queryFn,
+      remove: removeFn
     };
   });
 
