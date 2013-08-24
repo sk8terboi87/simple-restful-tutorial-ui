@@ -1,11 +1,14 @@
 "use strict"
 
 ((app) ->
-    Controller = ($scope, $resource, BlogsModel) ->
+    Controller = ($scope, resourceFactory, BlogsModel) ->
         BlogsModel.initialize($scope)
 
         $scope.save = ->
-            BlogsModel.create($scope.blog, $scope)
+            request = resourceFactory.create('blogs', $scope.blog)
+            request.$then((result) ->
+                $scope.alert.message = result.data.message
+            )
 
     app.controller('BlogsControllerCreate', Controller)
 

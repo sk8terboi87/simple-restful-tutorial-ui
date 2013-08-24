@@ -1,14 +1,23 @@
 "use strict"
 
 ((app) ->
-    Controller = ($scope, $routeParams, BlogsModel) ->
+    Controller = ($scope, $routeParams, BlogsModel, resourceFactory) ->
         BlogsModel.initialize($scope)
 
         $scope.list = ->
-            $scope.blogs = BlogsModel.retrieve()
+            request = resourceFactory.get('blogs')
+            request.$then((result) ->
+                $scope.blogs = result.data
+            )
+
 
         $scope.remove = (id) ->
-            BlogsModel.remove(id, $scope)
+            request = resourceFactory.remove('blogs/remove', id)
+            request.$then((result) ->
+                $scope.alert.message = result.data.message
+                if (result.data.status is "success")
+                    $scope.list()
+            )
 
         $scope.list()
 
