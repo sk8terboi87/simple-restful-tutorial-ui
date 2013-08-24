@@ -3,10 +3,14 @@
 
   (function(app) {
     var Controller;
-    Controller = function($scope, $resource, BlogsModel) {
+    Controller = function($scope, resourceFactory, BlogsModel) {
       BlogsModel.initialize($scope);
       return $scope.save = function() {
-        return BlogsModel.create($scope.blog, $scope);
+        var request;
+        request = resourceFactory.create('blogs', $scope.blog);
+        return request.$then(function(result) {
+          return $scope.alert.message = result.data.message;
+        });
       };
     };
     return app.controller('BlogsControllerCreate', Controller);

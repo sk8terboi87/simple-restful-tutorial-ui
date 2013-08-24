@@ -3,13 +3,24 @@
 
   (function(app) {
     var Controller;
-    Controller = function($scope, $routeParams, BlogsModel) {
+    Controller = function($scope, $routeParams, BlogsModel, resourceFactory) {
       BlogsModel.initialize($scope);
       $scope.list = function() {
-        return $scope.blogs = BlogsModel.retrieve();
+        var request;
+        request = resourceFactory.get('blogs');
+        return request.$then(function(result) {
+          return $scope.blogs = result.data;
+        });
       };
       $scope.remove = function(id) {
-        return BlogsModel.remove(id, $scope);
+        var request;
+        request = resourceFactory.remove('blogs/remove', id);
+        return request.$then(function(result) {
+          $scope.alert.message = result.data.message;
+          if (result.data.status === "success") {
+            return $scope.list();
+          }
+        });
       };
       return $scope.list();
     };
