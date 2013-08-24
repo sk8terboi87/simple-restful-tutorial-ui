@@ -6,9 +6,9 @@
     Controller = function($scope, resourceFactory, BlogsModel) {
       BlogsModel.initialize($scope);
       return $scope.save = function() {
-        var request;
-        request = resourceFactory.create('blogs', $scope.blog);
-        return request.$then(function(result) {
+        var blogResource;
+        blogResource = resourceFactory.create('blogs', $scope.blog);
+        return blogResource.$then(function(result) {
           return $scope.alert.message = result.data.message;
         });
       };

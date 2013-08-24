@@ -5,14 +5,14 @@
         BlogsModel.initialize($scope)
 
         $scope.fetchBlog = (id) ->
-            request = resourceFactory.query('blogs', id)
-            request.$then((result) ->
+            blogResource = resourceFactory.query('blogs', id)
+            blogResource.$then((result) ->
                 $scope.blog = result.data.data
             )
 
         $scope.update = ->
-            request = resourceFactory.update('blogs', $scope.blog)
-            request.$then((result) ->
+            blogResource = resourceFactory.update('blogs', $scope.blog)
+            blogResource.$then((result) ->
                 $scope.alert.message = result.data.message
             )
 

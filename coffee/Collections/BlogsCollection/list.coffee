@@ -5,15 +5,15 @@
         BlogsModel.initialize($scope)
 
         $scope.list = ->
-            request = resourceFactory.get('blogs')
-            request.$then((result) ->
+            blogResource = resourceFactory.get('blogs')
+            blogResource.$then((result) ->
                 $scope.blogs = result.data
             )
 
 
         $scope.remove = (id) ->
-            request = resourceFactory.remove('blogs/remove', id)
-            request.$then((result) ->
+            blogResource = resourceFactory.remove('blogs/remove', id)
+            blogResource.$then((result) ->
                 $scope.alert.message = result.data.message
                 if (result.data.status is "success")
                     $scope.list()

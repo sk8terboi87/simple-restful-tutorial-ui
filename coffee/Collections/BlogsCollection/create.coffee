@@ -5,8 +5,8 @@
         BlogsModel.initialize($scope)
 
         $scope.save = ->
-            request = resourceFactory.create('blogs', $scope.blog)
-            request.$then((result) ->
+            blogResource = resourceFactory.create('blogs', $scope.blog)
+            blogResource.$then((result) ->
                 $scope.alert.message = result.data.message
             )
 
